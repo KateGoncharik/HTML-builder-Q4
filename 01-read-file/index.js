@@ -1,9 +1,13 @@
-const { stdin, stdout } = process;
-stdout.write('Write your name, please\n');
+const fs = require('fs');
+const {  stdout } = process;
 
-stdin.on('data', (data) => {
-  const dataStringified = data.toString();
-  const reversed = dataStringified.split('').reverse().join('');
-  stdout.write(`It is yours:, ${reversed}`);
-  process.exit();
-});
+const path = require("path");
+
+const readableStream = fs.createReadStream(    path.join(__dirname, 'text.txt'),
+'utf-8'
+);
+readableStream.on("data", (chunk) => stdout.write(chunk));
+
+readableStream.on('error', error => {
+  stdout.write('Error', error.message);
+})
