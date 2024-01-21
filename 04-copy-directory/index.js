@@ -6,7 +6,7 @@ const directoryToCopy = path.join(__dirname, 'files')
 const directoryToFill = path.join(__dirname, 'files-copy')
 
 fs.promises.rm(directoryToFill, { recursive: true, force: true }).then(()=>{
-    stdout.write('cleared')
+    stdout.write('cleared\n')
     fs.promises.mkdir(directoryToFill, {recursive:true}).then(()=> {
         stdout.write('Directory created successfully');
         fs.readdir(directoryToCopy, (err,files)=>{
