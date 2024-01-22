@@ -7,8 +7,8 @@ const projectDist = path.join(__dirname, 'project-dist');
 
 
 const directoryToCopy = path.join(__dirname, 'assets')
-// const projectDist = path.join(__dirname, 'project-dist');
 const directoryToFill = path.join(projectDist, 'assets');
+
 
 
 function copyAllNestedFiles(sourcePath, destinationPath) {
@@ -35,7 +35,8 @@ function copyAllNestedFiles(sourcePath, destinationPath) {
 }
 
 function bundleStyles(){
-    fs.writeFile(projectDist,'style.css', ()=>{stdout.write('Styles bundled successfully')});
+    fs.writeFile(projectDist,'style.css', ()=>{stdout.write('Styles bundled successfully\n')});
+
     fs.readdir(directoryWithStyles, (err,files)=>{
         if(err){
             stdout.write(err)
@@ -64,11 +65,59 @@ function bundleStyles(){
 }
 
 
+function createIndexHtml () {
+    fs.appendFile(path.join(projectDist,'index.html'),'', ()=>{stdout.write('Index.html created successfully\n')});
+    fs.readdir(path.join(__dirname),{ withFileTypes: true }, (err,files)=>{
+        if(err){
+            stdout.write(err)
+            process.exit(1)
+        } else {
+            files.forEach((file)=>{
+                if(file.name === 'template.html'){
+                    const readableStream = fs.createReadStream(path.join(__dirname, file.name),'utf-8');
+                    readableStream.on("data", (chunk) => {
+                        let template = chunk;
+                        if(template.includes('{{footer}}')){
+                            const readableStream = fs.createReadStream(path.join(__dirname,'components', 'footer.html'),'utf-8');
+                            readableStream.on("data", (chunk) => {
+                             template = template.replace('{{footer}}', chunk)
+                            // fs.appendFile(path.join(projectDist,'index.html'),template, ()=>{})
+                            })
+                        }
+                        if(template.includes('{{header}}')){
+                            const readableStream = fs.createReadStream(path.join(__dirname,'components', 'header.html'),'utf-8');
+                            readableStream.on("data", (chunk) => {
+                             template = template.replace('{{header}}', chunk)
+
+                            // fs.writeFile(path.join(projectDist,'index.html'),template, ()=>{})
+                            })
+                        }
+                        if(template.includes('{{articles}}')){
+                            const readableStream = fs.createReadStream(path.join(__dirname,'components', 'articles.html'),'utf-8');
+                            readableStream.on("data", (chunk) => {
+                             template = template.replace('{{articles}}', chunk)
+                            fs.writeFile(path.join(projectDist,'index.html'),template, ()=>{})
+
+                            // fs.appendFile(path.join(projectDist,'index.html'),template, ()=>{})
+                            })
+                        }
+                        // fs.writeFile(path.join(projectDist,'index.html'),template, ()=>{})
+
+
+                    });
+                }
+            })
+        }
+    })
+}
+
+
 fs.promises.rm(projectDist, { recursive: true, force: true }).then(()=>{
     fs.promises.mkdir(projectDist).then(()=> {
         fs.promises.mkdir(directoryToFill)
-    stdout.write('Directory created successfully\n');
-    copyAllNestedFiles(directoryToCopy, directoryToFill)
-    bundleStyles()
+        stdout.write('Directory created successfully\n');
+        copyAllNestedFiles(directoryToCopy, directoryToFill);
+        bundleStyles();
+        createIndexHtml();
     })
 })
