@@ -16,6 +16,10 @@ const writableStream = fs.createWriteStream(
 process.on('exit', () => {
   stdout.write('Bye-bye');
 });
+process.on('SIGINT', () => {
+  stdout.write('Bye-bye');
+  process.exit()
+});
 stdin.on('data', (data) => {
   if (data.toString().trim() === 'exit') {
     process.exit();
