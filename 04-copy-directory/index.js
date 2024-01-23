@@ -10,7 +10,6 @@ fs.promises.rm(directoryToFill, { recursive: true, force: true }).then(() => {
   fs.promises
     .mkdir(directoryToFill, { recursive: true })
     .then(() => {
-      stdout.write('Directory created successfully');
       fs.readdir(directoryToCopy, (err, files) => {
         if (err) {
           stdout.write(err);
@@ -20,9 +19,7 @@ fs.promises.rm(directoryToFill, { recursive: true, force: true }).then(() => {
             fs.copyFile(
               path.join(directoryToCopy, file),
               path.join(directoryToFill, file),
-              () => {
-                stdout.write('copied');
-              },
+              () => {},
             );
           });
         }

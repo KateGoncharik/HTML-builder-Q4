@@ -84,7 +84,6 @@ function createIndexHtml() {
 fs.promises.rm(projectDist, { recursive: true, force: true }).then(() => {
   fs.promises.mkdir(projectDist).then(() => {
     fs.promises.mkdir(assetsTo);
-    stdout.write('Directory created successfully\n');
     copyAllNestedFiles(assetsFrom, assetsTo);
     bundleStyles();
     createIndexHtml();
