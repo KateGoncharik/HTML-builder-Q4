@@ -64,7 +64,7 @@ function createIndexHtml() {
 
       fs.readdir(path.join(__dirname, 'components'), (err, files) => {
         if (!files.includes(componentName)) {
-          console.log(`${componentName} is not in ${files}`);
+          console.error(`${componentName} is not in ${files}`);
           process.exit(1);
         }
       });

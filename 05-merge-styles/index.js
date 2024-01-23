@@ -5,9 +5,7 @@ const { stdout } = require('process');
 const directoryWithStyles = path.join(__dirname, 'styles');
 const projectDist = path.join(__dirname, 'project-dist');
 
-fs.writeFile(projectDist, 'bundle.css', () => {
-  console.log('created');
-});
+fs.unlink(path.join(projectDist, 'bundle.css'), () => {});
 fs.readdir(directoryWithStyles, (err, files) => {
   if (err) {
     stdout.write(err);
